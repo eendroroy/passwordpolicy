@@ -15,7 +15,7 @@ Vagrant.configure("2") do |config|
     vb.memory = 1024
   end
 
-  config.vm.provision "shell", inline: <<-SHELL
+  config.vm.provision "bootstrap", type: "shell", inline: <<-SHELL
     yum --enablerepo=updates clean metadata
     yum -y update
     rpm -Uvh https://yum.postgresql.org/10/redhat/rhel-7-x86_64/pgdg-centos10-10-2.noarch.rpm
@@ -26,5 +26,16 @@ Vagrant.configure("2") do |config|
     sudo cp /home/vagrant/passwordpolicy/postgresql.conf /var/lib/pgsql/10/data/postgresql.conf
     systemctl start postgresql-10.service
     systemctl enable postgresql-10.service
+  SHELL
+
+  config.vm.provision "install", type: "shell", inline: <<-SHELL
+    cd /home/vagrant/passwordpolicy
+    sudo PATH="/usr/pgsql-10/bin:$PATH" USE_PGXS=1 make
+    sudo PATH="/usr/pgsql-10/bin:$PATH" USE_PGXS=1 make install
+  SHELL
+
+  config.vm.provision "config", type: "shell", inline: <<-SHELL
+    sudo cp /home/vagrant/passwordpolicy/postgresql_passwordpolicy.conf /var/lib/pgsql/10/data/postgresql.conf
+    systemctl start postgresql-10.service
   SHELL
 end
