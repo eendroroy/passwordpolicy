@@ -18,6 +18,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "bootstrap", type: "shell", inline: <<-SHELL
     yum --enablerepo=updates clean metadata
     yum -y update
+    yum -y install openssl-devel
     rpm -Uvh https://yum.postgresql.org/10/redhat/rhel-7-x86_64/pgdg-centos10-10-2.noarch.rpm
     yum -y install postgresql10-server postgresql10-libs postgresql10-devel postgresql10-contrib
     yum -y install cracklib cracklib-devel
