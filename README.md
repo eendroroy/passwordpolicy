@@ -49,7 +49,7 @@ RHEL/CentOS/Fedora. Replace 10 with your major PostgreSQL version.
 
 ## Using the module
 
-To enable this module, add '$libdir/`passwordpolicy`' to 
+To enable this module, add '`$libdir/passwordpolicy`' to 
 shared_preload_libraries in postgresql.conf, then restart the server.
 
 ## More information
