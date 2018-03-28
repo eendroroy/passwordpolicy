@@ -1,17 +1,17 @@
-# i_passwordcheck
+# passwordpolicy
 
-[![GitHub tag](https://img.shields.io/github/tag/eendroroy/i_passwordcheck.svg)](https://github.com/eendroroy/i_passwordcheck/tags)
+[![GitHub tag](https://img.shields.io/github/tag/eendroroy/passwordpolicy.svg)](https://github.com/eendroroy/passwordpolicy/tags)
 
-[![Contributors](https://img.shields.io/github/contributors/eendroroy/i_passwordcheck.svg)](https://github.com/eendroroy/i_passwordcheck/graphs/contributors)
-[![GitHub last commit (branch)](https://img.shields.io/github/last-commit/eendroroy/i_passwordcheck/master.svg)](https://github.com/eendroroy/i_passwordcheck)
-[![license](https://img.shields.io/github/license/eendroroy/i_passwordcheck.svg)](https://github.com/eendroroy/i_passwordcheck/blob/master/LICENSE)
-[![GitHub issues](https://img.shields.io/github/issues/eendroroy/i_passwordcheck.svg)](https://github.com/eendroroy/i_passwordcheck/issues)
-[![GitHub closed issues](https://img.shields.io/github/issues-closed/eendroroy/i_passwordcheck.svg)](https://github.com/eendroroy/i_passwordcheck/issues?q=is%3Aissue+is%3Aclosed)
-[![GitHub pull requests](https://img.shields.io/github/issues-pr/eendroroy/i_passwordcheck.svg)](https://github.com/eendroroy/i_passwordcheck/pulls)
-[![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/eendroroy/i_passwordcheck.svg)](https://github.com/eendroroy/i_passwordcheck/pulls?q=is%3Apr+is%3Aclosed)
+[![Contributors](https://img.shields.io/github/contributors/eendroroy/passwordpolicy.svg)](https://github.com/eendroroy/passwordpolicy/graphs/contributors)
+[![GitHub last commit (branch)](https://img.shields.io/github/last-commit/eendroroy/passwordpolicy/master.svg)](https://github.com/eendroroy/passwordpolicy)
+[![license](https://img.shields.io/github/license/eendroroy/passwordpolicy.svg)](https://github.com/eendroroy/passwordpolicy/blob/master/LICENSE)
+[![GitHub issues](https://img.shields.io/github/issues/eendroroy/passwordpolicy.svg)](https://github.com/eendroroy/passwordpolicy/issues)
+[![GitHub closed issues](https://img.shields.io/github/issues-closed/eendroroy/passwordpolicy.svg)](https://github.com/eendroroy/passwordpolicy/issues?q=is%3Aissue+is%3Aclosed)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/eendroroy/passwordpolicy.svg)](https://github.com/eendroroy/passwordpolicy/pulls)
+[![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/eendroroy/passwordpolicy.svg)](https://github.com/eendroroy/passwordpolicy/pulls?q=is%3Apr+is%3Aclosed)
 
 
-The `i_passwordcheck` is like the regular PostgreSQL passwordcheck extension, except it is built with cracklib. Unlike the original module, this one has more strict password checks. The `passwordcheck_cracklib` module checks users' passwords whenever they are set with `CREATE ROLE` or `ALTER ROLE`. If a password is considered too weak, it will be rejected and the command will terminate with an error. 
+The `passwordpolicy` is like the regular PostgreSQL passwordcheck extension, except it is built with cracklib. Unlike the original module, this one has more strict password checks. The `passwordcheck_cracklib` module checks users' passwords whenever they are set with `CREATE ROLE` or `ALTER ROLE`. If a password is considered too weak, it will be rejected and the command will terminate with an error. 
 
 ## Installing by compiling source code
 
@@ -49,7 +49,7 @@ RHEL/CentOS/Fedora. Replace 10 with your major PostgreSQL version.
 
 ## Using the module
 
-To enable this module, add '$libdir/`i_passwordcheck`' to 
+To enable this module, add '$libdir/`passwordpolicy`' to 
 shared_preload_libraries in postgresql.conf, then restart the server.
 
 ## More information
@@ -60,7 +60,7 @@ https://www.postgresql.org/docs/devel/static/passwordcheck.html
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at [i_passwordcheck](https://github.com/eendroroy/i_passwordcheck) repository.
+Bug reports and pull requests are welcome on GitHub at [passwordpolicy](https://github.com/eendroroy/passwordpolicy) repository.
 This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## Author

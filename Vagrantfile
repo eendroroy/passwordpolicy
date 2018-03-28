@@ -8,7 +8,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.network "private_network", ip: "192.168.33.10"
 
-  config.vm.synced_folder ".", "/home/vagrant/i_passwordcheck"
+  config.vm.synced_folder ".", "/home/vagrant/passwordpolicy"
 
   config.vm.provider "virtualbox" do |vb|
     vb.gui = false
@@ -22,7 +22,7 @@ Vagrant.configure("2") do |config|
     yum -y install cracklib cracklib-devel
     # default data directory is '/var/lib/pgsql/10/data/'
     /usr/pgsql-10/bin/postgresql-10-setup initdb
-    sudo cp /home/vagrant/i_passwordcheck/postgresql.conf /var/lib/pgsql/10/data/postgresql.conf
+    sudo cp /home/vagrant/passwordpolicy/postgresql.conf /var/lib/pgsql/10/data/postgresql.conf
     systemctl start postgresql-10.service
     systemctl enable postgresql-10.service
   SHELL
