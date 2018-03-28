@@ -22,6 +22,7 @@ Vagrant.configure("2") do |config|
     rpm -Uvh https://yum.postgresql.org/10/redhat/rhel-7-x86_64/pgdg-centos10-10-2.noarch.rpm
     yum -y install postgresql10-server postgresql10-libs postgresql10-devel postgresql10-contrib
     yum -y install cracklib cracklib-devel
+    mkdict /usr/share/dict/* | packer /usr/lib/cracklib_dict
     # default data directory is '/var/lib/pgsql/10/data/'
     /usr/pgsql-10/bin/postgresql-10-setup initdb
     sudo cp /home/vagrant/passwordpolicy/postgresql.conf /var/lib/pgsql/10/data/postgresql.conf
@@ -37,6 +38,6 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "config", type: "shell", inline: <<-SHELL
     sudo cp /home/vagrant/passwordpolicy/postgresql_passwordpolicy.conf /var/lib/pgsql/10/data/postgresql.conf
-    systemctl start postgresql-10.service
+    systemctl restart postgresql-10.service
   SHELL
 end
