@@ -13,6 +13,8 @@
  *-------------------------------------------------------------------------
  */
 #include "postgres.h"
+#include "catalog/namespace.h"
+#include "utils/guc.h"
 
 #include <ctype.h>
 
@@ -29,10 +31,11 @@
 
 PG_MODULE_MAGIC;
 
-/* passwords shorter than this will be rejected */
-#define MIN_PWD_LENGTH 8
-
 extern void _PG_init(void);
+
+int passMinLength = 8;
+
+int passMinSpcChar = 4;
 
 /*
  * check_password
@@ -89,7 +92,7 @@ extern void _PG_init(void);
 						pwd_has_nonletter;
 
 			/* enforce minimum length */
-			if (pwdlen < MIN_PWD_LENGTH)
+			if (pwdlen < passMinLength)
 				ereport(ERROR,
 						(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
 						 errmsg("password is too short")));
@@ -172,7 +175,7 @@ extern void _PG_init(void);
 				 */
 
 				/* enforce minimum length */
-				if (pwdlen < MIN_PWD_LENGTH)
+				if (pwdlen < passMinLength)
 					ereport(ERROR,
 							(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
 							 errmsg("password is too short")));
@@ -224,9 +227,25 @@ extern void _PG_init(void);
 /*
  * Module initialization function
  */
-void
-_PG_init(void)
-{
+void _PG_init(void) {
+    /* Be sure we do initialization only once */
+    static bool inited = false;
+
+    if (inited)
+	return;
+    
+    /* Define p_policy.min_pass_len */
+	DefineCustomIntVariable(
+		"p_policy.min_pass_len", "Minimum password length.",
+		NULL, &passMinLength, 8, 1, INT_MAX, PGC_SIGHUP, 0, NULL, NULL, NULL
+	);
+    
+    /* Define p_policy.min_special_chars */
+	DefineCustomIntVariable(
+		"p_policy.min_special_chars", "Minimum password length.",
+		NULL, &passMinSpcChar, 4, 1, INT_MAX, PGC_SIGHUP, 0, NULL, NULL, NULL
+	);
+
 	/* activate password checks when the module is loaded */
 	check_password_hook = check_password;
 }
