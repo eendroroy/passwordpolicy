@@ -33,9 +33,14 @@ PG_MODULE_MAGIC;
 
 extern void _PG_init(void);
 
+// p_policy.min_pass_len
 int passMinLength = 8;
 
-int passMinSpcChar = 4;
+// p_policy.min_special_chars
+int passMinSpcChar = 2;
+
+// p_policy.min_numbers
+int passMinNumChar = 1;
 
 /*
  * check_password
@@ -54,6 +59,7 @@ int passMinSpcChar = 4;
  * expiration time, but you might wish to insist that it be non-null and
  * not too far in the future.
  */
+
 
 #if PG_VERSION_NUM >= 100000
 	static void
@@ -87,9 +93,7 @@ int passMinSpcChar = 4;
 			 */
 			const char *password = shadow_pass;
 			int			pwdlen = strlen(password);
-			int			i;
-			bool		pwd_has_letter,
-						pwd_has_nonletter;
+			int			i, letter_count, number_count, spc_char_count;
 
 			/* enforce minimum length */
 			if (pwdlen < passMinLength)
@@ -104,8 +108,9 @@ int passMinSpcChar = 4;
 					 errmsg("password must not contain user name")));
 
 			/* check if the password contains both letters and non-letters */
-			pwd_has_letter = false;
-			pwd_has_nonletter = false;
+			letter_count = 0;
+			number_count = 0;
+			spc_char_count = 0;
 			for (i = 0; i < pwdlen; i++)
 			{
 				/*
@@ -113,14 +118,20 @@ int passMinSpcChar = 4;
 				 * consider non-ASCII characters non-letters
 				 */
 				if (isalpha((unsigned char) password[i]))
-					pwd_has_letter = true;
+					letter_count++;
+				else if (isdigit((unsigned char) password[i]))
+					number_count++;
 				else
-					pwd_has_nonletter = true;
+					spc_char_count++;
 			}
-			if (!pwd_has_letter || !pwd_has_nonletter)
+			if (number_count < passMinNumChar)
 				ereport(ERROR,
 						(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-				   errmsg("password must contain both letters and nonletters")));
+				   errmsg("password must contain atleast %d neumeric characters.", passMinNumChar)));
+			else if (spc_char_count < passMinSpcChar)
+				ereport(ERROR,
+						(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				   errmsg("password must contain atleast %d special characters.", passMinSpcChar)));
 
 	#ifdef USE_CRACKLIB
 			/* call cracklib to check password */
@@ -144,9 +155,7 @@ int passMinSpcChar = 4;
 		int			namelen = strlen(username);
 		int			pwdlen = strlen(password);
 		char		encrypted[MD5_PASSWD_LEN + 1];
-		int			i;
-		bool		pwd_has_letter,
-					pwd_has_nonletter;
+		int			i, letter_count, number_count, spc_char_count;
 
 		switch (password_type)
 		{
@@ -187,8 +196,9 @@ int passMinSpcChar = 4;
 							 errmsg("password must not contain user name")));
 
 				/* check if the password contains both letters and non-letters */
-				pwd_has_letter = false;
-				pwd_has_nonletter = false;
+				letter_count = 0;
+				number_count = 0;
+				spc_char_count = 0;
 				for (i = 0; i < pwdlen; i++)
 				{
 					/*
@@ -196,14 +206,20 @@ int passMinSpcChar = 4;
 					 * consider non-ASCII characters non-letters
 					 */
 					if (isalpha((unsigned char) password[i]))
-						pwd_has_letter = true;
+						letter_count++;
+					else if (isdigit((unsigned char) password[i]))
+						number_count++;
 					else
-						pwd_has_nonletter = true;
+						spc_char_count++;
 				}
-				if (!pwd_has_letter || !pwd_has_nonletter)
+				if (number_count < passMinNumChar)
 					ereport(ERROR,
 							(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-					errmsg("password must contain both letters and nonletters")));
+					   errmsg("password must contain atleast %d neumeric characters.", passMinNumChar)));
+				else if (spc_char_count < passMinSpcChar)
+					ereport(ERROR,
+							(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+					   errmsg("password must contain atleast %d special characters.", passMinSpcChar)));
 
 	#ifdef USE_CRACKLIB
 				/* call cracklib to check password */
@@ -242,8 +258,14 @@ void _PG_init(void) {
     
     /* Define p_policy.min_special_chars */
 	DefineCustomIntVariable(
-		"p_policy.min_special_chars", "Minimum password length.",
-		NULL, &passMinSpcChar, 4, 1, INT_MAX, PGC_SIGHUP, 0, NULL, NULL, NULL
+		"p_policy.min_special_chars", "Minimum number of special characters.",
+		NULL, &passMinSpcChar, 1, 1, INT_MAX, PGC_SIGHUP, 0, NULL, NULL, NULL
+	);
+
+    /* Define p_policy.min_numbers */
+	DefineCustomIntVariable(
+		"p_policy.min_numbers", "Minimum number of neumeric characters.",
+		NULL, &passMinNumChar, 1, 1, INT_MAX, PGC_SIGHUP, 0, NULL, NULL, NULL
 	);
 
 	/* activate password checks when the module is loaded */
