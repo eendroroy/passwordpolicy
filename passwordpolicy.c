@@ -42,6 +42,9 @@ int passMinSpcChar = 1;
 // p_policy.min_numbers
 int passMinNumChar = 1;
 
+// p_policy.min_uppercase_letter
+int passMinUpperChar = 1;
+
 /*
  * check_password
  *
@@ -62,15 +65,14 @@ int passMinNumChar = 1;
 
 
 #if PG_VERSION_NUM >= 100000
-	static void
-	check_password(const char *username,
-				   const char *shadow_pass,
-				   PasswordType password_type,
-				   Datum validuntil_time,
-				   bool validuntil_null)
-	{
-		if (password_type != PASSWORD_TYPE_PLAINTEXT)
-		{
+	static void check_password(
+		const char *username,
+		const char *shadow_pass,
+		PasswordType password_type,
+		Datum validuntil_time,
+		bool validuntil_null
+	) {
+		if (password_type != PASSWORD_TYPE_PLAINTEXT) {
 			/*
 			 * Unfortunately we cannot perform exhaustive checks on encrypted
 			 * passwords - we are restricted to guessing. (Alternatively, we could
@@ -81,84 +83,93 @@ int passMinNumChar = 1;
 			 */
 			char	   *logdetail;
 
-			if (plain_crypt_verify(username, shadow_pass, username, &logdetail) == STATUS_OK)
+			if (plain_crypt_verify(username, shadow_pass, username, &logdetail) == STATUS_OK) {
 				ereport(ERROR,
 						(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
 						 errmsg("password must not contain user name")));
-		}
-		else
-		{
+			}
+		} else {
 			/*
 			 * For unencrypted passwords we can perform better checks
 			 */
 			const char *password = shadow_pass;
 			int			pwdlen = strlen(password);
-			int			i, letter_count, number_count, spc_char_count;
+			int			i, letter_count, number_count, spc_char_count, upper_count;
 
 			/* enforce minimum length */
-			if (pwdlen < passMinLength)
+			if (pwdlen < passMinLength) {
 				ereport(ERROR,
 						(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-						 errmsg("password is too short")));
+						 errmsg("password is too short.")));
+			}
 
 			/* check if the password contains the username */
-			if (strstr(password, username))
+			if (strstr(password, username)) {
 				ereport(ERROR,
 						(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-					 errmsg("password must not contain user name")));
+					 errmsg("password must not contain user name.")));
+			}
 
 			/* check if the password contains both letters and non-letters */
 			letter_count = 0;
 			number_count = 0;
 			spc_char_count = 0;
-			for (i = 0; i < pwdlen; i++)
-			{
+			upper_count = 0;
+
+			for (i = 0; i < pwdlen; i++) {
 				/*
 				 * isalpha() does not work for multibyte encodings but let's
 				 * consider non-ASCII characters non-letters
 				 */
-				if (isalpha((unsigned char) password[i]))
+				if (isalpha((unsigned char) password[i])) {
 					letter_count++;
-				else if (isdigit((unsigned char) password[i]))
+					if (isupper((unsigned char) password[i])) {
+						upper_count++;
+					}
+				} else if (isdigit((unsigned char) password[i])) {
 					number_count++;
-				else
+				} else {
 					spc_char_count++;
+				}
 			}
-			if (number_count < passMinNumChar)
+			if (number_count < passMinNumChar) {
 				ereport(ERROR,
 						(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
 				   errmsg("password must contain atleast %d neumeric characters.", passMinNumChar)));
-			else if (spc_char_count < passMinSpcChar)
+			} else if (spc_char_count < passMinSpcChar) {
 				ereport(ERROR,
 						(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
 				   errmsg("password must contain atleast %d special characters.", passMinSpcChar)));
+			} else if (upper_count < passMinUpperChar) {
+				ereport(ERROR,
+						(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				   errmsg("password must contain atleast %d uppercase letters.", passMinUpperChar)));
+			}
 
 	#ifdef USE_CRACKLIB
 			/* call cracklib to check password */
-			if (FascistCheck(password, CRACKLIB_DICTPATH))
-				ereport(ERROR,
-						(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-						 errmsg("password is easily cracked")));
+			if (FascistCheck(password, CRACKLIB_DICTPATH)) {
+				ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE), errmsg("password is easily cracked.")));
+			}
 	#endif
 		}
 
 		/* all checks passed, password is ok */
 	}
 #else
-	static void
-	check_password(const char *username,
-				   const char *password,
-				   int password_type,
-				   Datum validuntil_time,
-				   bool validuntil_null)
-	{
+	static void check_password(
+		const char *username,
+		const char *password,
+		int password_type,
+		Datum validuntil_time,
+		bool validuntil_null
+	){
 		int			namelen = strlen(username);
 		int			pwdlen = strlen(password);
 		char		encrypted[MD5_PASSWD_LEN + 1];
-		int			i, letter_count, number_count, spc_char_count;
+		int			i, letter_count, number_count, spc_char_count, upper_count;
 
-		switch (password_type)
-		{
+		switch (password_type) {
 			case PASSWORD_TYPE_MD5:
 
 				/*
@@ -169,12 +180,14 @@ int passMinNumChar = 1;
 				 *
 				 * We only check for username = password.
 				 */
-				if (!pg_md5_encrypt(username, username, namelen, encrypted))
-					elog(ERROR, "password encryption failed");
-				if (strcmp(password, encrypted) == 0)
+				if (!pg_md5_encrypt(username, username, namelen, encrypted)) {
+					elog(ERROR, "password encryption failed.");
+				}
+				if (strcmp(password, encrypted) == 0) {
 					ereport(ERROR,
 							(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-							 errmsg("password must not contain user name")));
+							 errmsg("password must not contain user name.")));
+				}
 				break;
 
 			case PASSWORD_TYPE_PLAINTEXT:
@@ -184,54 +197,64 @@ int passMinNumChar = 1;
 				 */
 
 				/* enforce minimum length */
-				if (pwdlen < passMinLength)
+				if (pwdlen < passMinLength) {
 					ereport(ERROR,
 							(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-							 errmsg("password is too short")));
+							 errmsg("password is too short.")));
+				}
 
 				/* check if the password contains the username */
-				if (strstr(password, username))
+				if (strstr(password, username)) {
 					ereport(ERROR,
 							(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-							 errmsg("password must not contain user name")));
+							 errmsg("password must not contain user name.")));
+				}
 
 				/* check if the password contains both letters and non-letters */
 				letter_count = 0;
 				number_count = 0;
 				spc_char_count = 0;
-				for (i = 0; i < pwdlen; i++)
-				{
+				upper_count = 0;
+
+				for (i = 0; i < pwdlen; i++) {
 					/*
 					 * isalpha() does not work for multibyte encodings but let's
 					 * consider non-ASCII characters non-letters
 					 */
-					if (isalpha((unsigned char) password[i]))
+					if (isalpha((unsigned char) password[i])) {
 						letter_count++;
-					else if (isdigit((unsigned char) password[i]))
+						if (isupper((unsigned char) password[i])) {
+							upper_count++;
+						}
+					} else if (isdigit((unsigned char) password[i])) {
 						number_count++;
-					else
+					} else {
 						spc_char_count++;
+					}
 				}
-				if (number_count < passMinNumChar)
+				if (number_count < passMinNumChar) {
 					ereport(ERROR,
 							(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
 					   errmsg("password must contain atleast %d neumeric characters.", passMinNumChar)));
-				else if (spc_char_count < passMinSpcChar)
+				} else if (spc_char_count < passMinSpcChar) {
 					ereport(ERROR,
 							(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
 					   errmsg("password must contain atleast %d special characters.", passMinSpcChar)));
-
-	#ifdef USE_CRACKLIB
-				/* call cracklib to check password */
-				if (FascistCheck(password, CRACKLIB_DICTPATH))
+				} else if (upper_count < passMinUpperChar) {
 					ereport(ERROR,
 							(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-							 errmsg("password is easily cracked")));
+					   errmsg("password must contain atleast %d upper case letters.", passMinUpperChar)));
+				}
+	#ifdef USE_CRACKLIB
+				/* call cracklib to check password */
+				if (FascistCheck(password, CRACKLIB_DICTPATH)) {
+					ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE), errmsg("password is easily cracked.")));
+				}
 	#endif
 				break;
 
 			default:
-				elog(ERROR, "unrecognized password type: %d", password_type);
+				elog(ERROR, "unrecognized password type: %d.", password_type);
 				break;
 		}
 
@@ -266,6 +289,12 @@ void _PG_init(void) {
 	DefineCustomIntVariable(
 		"p_policy.min_numbers", "Minimum number of neumeric characters.",
 		NULL, &passMinNumChar, 1, 1, INT_MAX, PGC_SIGHUP, 0, NULL, NULL, NULL
+	);
+
+    /* Define p_policy.min_uppercase_letter */
+	DefineCustomIntVariable(
+		"p_policy.min_uppercase_letter", "Minimum number of upper case letters.",
+		NULL, &passMinUpperChar, 1, 1, INT_MAX, PGC_SIGHUP, 0, NULL, NULL, NULL
 	);
 
 	/* activate password checks when the module is loaded */
