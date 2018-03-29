@@ -52,6 +52,15 @@ RHEL/CentOS/Fedora. Replace 10 with your major PostgreSQL version.
 To enable this module, add '`$libdir/passwordpolicy`' to 
 shared_preload_libraries in postgresql.conf, then restart the server.
 
+## Configurations
+
+```config
+p_policy.min_password_len = 8
+p_policy.min_special_chars = 2
+p_policy.min_numbers = 2
+p_policy.min_uppercase_letter = 2
+```
+
 ## More information
 
 For more details, please read the manual of the original module:

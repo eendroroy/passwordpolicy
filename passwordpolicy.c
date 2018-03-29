@@ -33,7 +33,7 @@ PG_MODULE_MAGIC;
 
 extern void _PG_init(void);
 
-// p_policy.min_pass_len
+// p_policy.min_password_len
 int passMinLength = 8;
 
 // p_policy.min_special_chars
@@ -275,7 +275,7 @@ void _PG_init(void) {
     
     /* Define p_policy.min_pass_len */
 	DefineCustomIntVariable(
-		"p_policy.min_pass_len", "Minimum password length.",
+		"p_policy.min_password_len", "Minimum password length.",
 		NULL, &passMinLength, 8, 1, INT_MAX, PGC_SIGHUP, 0, NULL, NULL, NULL
 	);
     
