@@ -34,6 +34,7 @@ Vagrant.configure("2") do |config|
     cd /home/vagrant/passwordpolicy
     sudo PATH="/usr/pgsql-10/bin:$PATH" USE_PGXS=1 make
     sudo PATH="/usr/pgsql-10/bin:$PATH" USE_PGXS=1 make install
+    rm passwordpolicy.o passwordpolicy.so
   SHELL
 
   config.vm.provision "config", type: "shell", inline: <<-SHELL
