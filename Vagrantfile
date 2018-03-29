@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
     yum -y install openssl-devel
     rpm -Uvh https://yum.postgresql.org/10/redhat/rhel-7-x86_64/pgdg-centos10-10-2.noarch.rpm
     yum -y install postgresql10-server postgresql10-libs postgresql10-devel postgresql10-contrib
-    yum -y install cracklib cracklib-devel
+    yum -y install cracklib cracklib-devel cracklib-dicts words
     mkdict /usr/share/dict/* | packer /usr/lib/cracklib_dict
     # default data directory is '/var/lib/pgsql/10/data/'
     /usr/pgsql-10/bin/postgresql-10-setup initdb
