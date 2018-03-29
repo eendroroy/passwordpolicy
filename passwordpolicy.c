@@ -37,7 +37,7 @@ extern void _PG_init(void);
 int passMinLength = 8;
 
 // p_policy.min_special_chars
-int passMinSpcChar = 2;
+int passMinSpcChar = 1;
 
 // p_policy.min_numbers
 int passMinNumChar = 1;
