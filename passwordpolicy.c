@@ -135,7 +135,7 @@ int passMinUpperChar = 1;
 			if (number_count < passMinNumChar) {
 				ereport(ERROR,
 						(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-				   errmsg("password must contain atleast %d neumeric characters.", passMinNumChar)));
+				   errmsg("password must contain atleast %d numeric characters.", passMinNumChar)));
 			} else if (spc_char_count < passMinSpcChar) {
 				ereport(ERROR,
 						(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
@@ -235,7 +235,7 @@ int passMinUpperChar = 1;
 				if (number_count < passMinNumChar) {
 					ereport(ERROR,
 							(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-					   errmsg("password must contain atleast %d neumeric characters.", passMinNumChar)));
+					   errmsg("password must contain atleast %d numeric characters.", passMinNumChar)));
 				} else if (spc_char_count < passMinSpcChar) {
 					ereport(ERROR,
 							(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
@@ -287,7 +287,7 @@ void _PG_init(void) {
 
     /* Define p_policy.min_numbers */
 	DefineCustomIntVariable(
-		"p_policy.min_numbers", "Minimum number of neumeric characters.",
+		"p_policy.min_numbers", "Minimum number of numeric characters.",
 		NULL, &passMinNumChar, 1, 1, INT_MAX, PGC_SIGHUP, 0, NULL, NULL, NULL
 	);
 
