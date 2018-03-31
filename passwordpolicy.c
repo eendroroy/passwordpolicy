@@ -299,4 +299,6 @@ void _PG_init(void) {
 
 	/* activate password checks when the module is loaded */
 	check_password_hook = check_password;
+
+	inited = true;
 }
