@@ -45,6 +45,9 @@ int passMinNumChar = 1;
 // p_policy.min_uppercase_letter
 int passMinUpperChar = 1;
 
+// p_policy.min_lowercase_letter
+int passMinLowerChar = 1;
+
 /*
  * check_password
  *
@@ -94,7 +97,7 @@ int passMinUpperChar = 1;
 			 */
 			const char *password = shadow_pass;
 			int			pwdlen = strlen(password);
-			int			i, letter_count, number_count, spc_char_count, upper_count;
+			int			i, letter_count, number_count, spc_char_count, upper_count, lower_count;
 
 			/* enforce minimum length */
 			if (pwdlen < passMinLength) {
@@ -115,6 +118,7 @@ int passMinUpperChar = 1;
 			number_count = 0;
 			spc_char_count = 0;
 			upper_count = 0;
+			lower_count = 0;
 
 			for (i = 0; i < pwdlen; i++) {
 				/*
@@ -125,6 +129,8 @@ int passMinUpperChar = 1;
 					letter_count++;
 					if (isupper((unsigned char) password[i])) {
 						upper_count++;
+					} else if (islower((unsigned char) password[i])) {
+						lower_count++;
 					}
 				} else if (isdigit((unsigned char) password[i])) {
 					number_count++;
@@ -143,7 +149,11 @@ int passMinUpperChar = 1;
 			} else if (upper_count < passMinUpperChar) {
 				ereport(ERROR,
 						(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-				   errmsg("password must contain atleast %d uppercase letters.", passMinUpperChar)));
+				   errmsg("password must contain atleast %d upper case letters.", passMinUpperChar)));
+			} else if (lower_count < passMinLowerChar) {
+				ereport(ERROR,
+						(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				   errmsg("password must contain atleast %d lower case letters.", passMinLowerChar)));
 			}
 
 	#ifdef USE_CRACKLIB
@@ -167,7 +177,7 @@ int passMinUpperChar = 1;
 		int			namelen = strlen(username);
 		int			pwdlen = strlen(password);
 		char		encrypted[MD5_PASSWD_LEN + 1];
-		int			i, letter_count, number_count, spc_char_count, upper_count;
+		int			i, letter_count, number_count, spc_char_count, upper_count, lower_count;
 
 		switch (password_type) {
 			case PASSWORD_TYPE_MD5:
@@ -215,6 +225,7 @@ int passMinUpperChar = 1;
 				number_count = 0;
 				spc_char_count = 0;
 				upper_count = 0;
+				lower_count = 0;
 
 				for (i = 0; i < pwdlen; i++) {
 					/*
@@ -225,6 +236,8 @@ int passMinUpperChar = 1;
 						letter_count++;
 						if (isupper((unsigned char) password[i])) {
 							upper_count++;
+						}else if (islower((unsigned char) password[i])) {
+							lower_count++;
 						}
 					} else if (isdigit((unsigned char) password[i])) {
 						number_count++;
@@ -244,7 +257,12 @@ int passMinUpperChar = 1;
 					ereport(ERROR,
 							(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
 					   errmsg("password must contain atleast %d upper case letters.", passMinUpperChar)));
+				} else if (lower_count < passMinLowerChar) {
+					ereport(ERROR,
+							(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+					   errmsg("password must contain atleast %d lower case letters.", passMinLowerChar)));
 				}
+
 	#ifdef USE_CRACKLIB
 				/* call cracklib to check password */
 				if (FascistCheck(password, CRACKLIB_DICTPATH)) {
@@ -295,6 +313,12 @@ void _PG_init(void) {
 	DefineCustomIntVariable(
 		"p_policy.min_uppercase_letter", "Minimum number of upper case letters.",
 		NULL, &passMinUpperChar, 1, 1, INT_MAX, PGC_SIGHUP, 0, NULL, NULL, NULL
+	);
+
+    /* Define p_policy.min_lowercase_letter */
+	DefineCustomIntVariable(
+		"p_policy.min_lowercase_letter", "Minimum number of lower case letters.",
+		NULL, &passMinLowerChar, 1, 1, INT_MAX, PGC_SIGHUP, 0, NULL, NULL, NULL
 	);
 
 	/* activate password checks when the module is loaded */
