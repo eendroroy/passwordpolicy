@@ -25,7 +25,7 @@ Vagrant.configure("2") do |config|
     mkdict /usr/share/dict/* | packer /usr/lib/cracklib_dict
     # default data directory is '/var/lib/pgsql/10/data/'
     /usr/pgsql-10/bin/postgresql-10-setup initdb
-    sudo cp /home/vagrant/passwordpolicy/postgresql.conf /var/lib/pgsql/10/data/postgresql.conf
+    sudo cp /home/vagrant/passwordpolicy/test_data/postgresql.conf /var/lib/pgsql/10/data/postgresql.conf
     systemctl start postgresql-10.service
     systemctl enable postgresql-10.service
   SHELL
@@ -38,7 +38,7 @@ Vagrant.configure("2") do |config|
   SHELL
 
   config.vm.provision "config", type: "shell", inline: <<-SHELL
-    sudo cp /home/vagrant/passwordpolicy/postgresql_passwordpolicy.conf /var/lib/pgsql/10/data/postgresql.conf
+    sudo cp /home/vagrant/passwordpolicy/test_data/postgresql_passwordpolicy.conf /var/lib/pgsql/10/data/postgresql.conf
     systemctl restart postgresql-10.service
   SHELL
 end
