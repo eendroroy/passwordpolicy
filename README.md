@@ -47,6 +47,13 @@ USE_PGXS=1 make install
 `pg_config` is usually under `/usr/pgsql-10/bin/pg_config` on 
 RHEL/CentOS/Fedora. Replace 10 with your major PostgreSQL version.
 
+Alternatively the following will work too:
+
+```bash
+PATH="/usr/pgsql-10/bin:$PATH" USE_PGXS=1 make
+sudo PATH="/usr/pgsql-10/bin:$PATH" USE_PGXS=1 make install
+```
+
 ## Using the module
 
 To enable this module, add '`$libdir/passwordpolicy`' to 
