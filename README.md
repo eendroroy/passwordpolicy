@@ -69,6 +69,7 @@ p_policy.min_special_chars = 2
 ```
 
 - Set minimum number of numeric characters:
+
 ```
 p_policy.min_numbers = 2
 ```
@@ -77,6 +78,12 @@ p_policy.min_numbers = 2
 
 ```
 p_policy.min_uppercase_letter = 2
+```
+
+- Set minimum number of lower casae letters:
+
+```
+p_policy.min_lowercase_letter = 2
 ```
 
 ## More information
