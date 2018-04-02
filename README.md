@@ -17,7 +17,7 @@ The `passwordpolicy` is like the regular PostgreSQL passwordcheck extension, exc
 
 To build it, just do this:
 
-```
+```bash
 USE_PGXS=1 make
 USE_PGXS=1 make install
 ```
@@ -33,13 +33,13 @@ a package management system such as RPM to install PostgreSQL, be sure
 that the -devel package is also installed. If necessary tell the build 
 process where to find it. Edit Makefile, and change PG_CONFIG variable:
 
-```
+```bash
 PG_CONFIG=/path/to/pg_config
 ```
 
 followed by the
 
-```
+```bash
 USE_PGXS=1 make
 USE_PGXS=1 make install
 ```
