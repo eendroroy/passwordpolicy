@@ -41,4 +41,13 @@ Vagrant.configure("2") do |config|
     sudo cp /home/vagrant/passwordpolicy/passwordpolicy_test/postgresql_passwordpolicy.conf /var/lib/pgsql/10/data/postgresql.conf
     systemctl restart postgresql-10.service
   SHELL
+
+  config.vm.provision "test", type: "shell", inline: <<-SHELL
+    echo "test Password: 'aaaa'" && sudo -iu postgres psql -c "CREATE USER test_pass WITH PASSWORD 'aaaa';" | true
+    echo "test Password: 'aaaaaaaaaaaa'" && sudo -iu postgres psql -c "CREATE USER test_pass WITH PASSWORD 'aaaaaaaaaaaa';" | true
+    echo "test Password: 'aaaaaaaa1234'" && sudo -iu postgres psql -c "CREATE USER test_pass WITH PASSWORD 'aaaaaaaa1234';" | true
+    echo "test Password: 'aaaaaa#*#134'" && sudo -iu postgres psql -c "CREATE USER test_pass WITH PASSWORD 'aaaaaa#*#134';" | true
+    echo "test Password: 'ASWsdf#*#134'" && sudo -iu postgres psql -c "CREATE USER test_pass WITH PASSWORD 'ASWsdf#*#134';" | true
+    echo "drop user 'test_pass'" && sudo -iu postgres psql -c "DROP USER test_pass;" | true
+  SHELL
 end
