@@ -288,6 +288,13 @@ static void define_variables() {
 		"p_policy.min_lowercase_letter", "Minimum number of lower case letters.",
 		NULL, &passMinLowerChar, 1, 1, INT_MAX, PGC_SIGHUP, 0, NULL, NULL, NULL
 	);
+
+	if (passMinLength < (passMinSpcChar + passMinNumChar + passMinUpperChar + passMinLowerChar)) {
+		ereport(ERROR, (
+			errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+			errmsg("configuration error.\nsum of minimum character requirement exceeds minimum password length.")
+		));
+	}
 }
 
 /*
