@@ -63,33 +63,20 @@ shared_preload_libraries in postgresql.conf, then restart the server.
 
 Configure the `passwordpolicy` plugin in `postgresql.conf`.
 
-- Set minimum Password length:
-
 ```
+# Set minimum Password length:
 p_policy.min_password_len = 8
-```
 
-- Set minimum number of special chracters:
-
-```
+# Set minimum number of special chracters:
 p_policy.min_special_chars = 2
-```
 
-- Set minimum number of numeric characters:
-
-```
+# Set minimum number of numeric characters:
 p_policy.min_numbers = 2
-```
 
-- Set minimum number of upper case letters:
-
-```
+# Set minimum number of upper case letters:
 p_policy.min_uppercase_letter = 2
-```
 
-- Set minimum number of lower casae letters:
-
-```
+# Set minimum number of lower casae letters:
 p_policy.min_lowercase_letter = 2
 ```
 
@@ -97,7 +84,7 @@ p_policy.min_lowercase_letter = 2
 
 For more details, please read the manual of the original module:
 
-https://www.postgresql.org/docs/devel/static/passwordcheck.html
+[https://www.postgresql.org/docs/current/static/passwordcheck.html](https://www.postgresql.org/docs/current/static/passwordcheck.html)
 
 ## Contributing
 
