@@ -11,7 +11,7 @@
 [![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/eendroroy/passwordpolicy.svg)](https://github.com/eendroroy/passwordpolicy/pulls?q=is%3Apr+is%3Aclosed)
 
 
-The `passwordpolicy` is like the regular PostgreSQL passwordcheck extension, except it is built with cracklib. Unlike the original module, this one has more strict password checks. The `passwordcheck_cracklib` module checks users' passwords whenever they are set with `CREATE ROLE` or `ALTER ROLE`. If a password is considered too weak, it will be rejected and the command will terminate with an error. 
+The `passwordpolicy` is like the regular PostgreSQL passwordcheck extension, except it is built with cracklib and has some configurations options. Unlike the original module, this one has more strict password checks. The `passwordpolicy` module checks users' passwords whenever they are set with `CREATE ROLE` or `ALTER ROLE`. If a password is considered too weak, it will be rejected and the command will terminate with an error. 
 
 ## Installing by compiling source code
 
