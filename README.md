@@ -15,6 +15,48 @@ The `passwordpolicy` is like the regular PostgreSQL passwordcheck extension, exc
 
 ## Installing by compiling source code
 
+**Prerequisit**
+
+`Ubuntu`:
+
+```bash
+# add postgres repo
+add-apt-repository 'deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main'
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+
+# install postgres
+apt-get -y update
+apt-get -y install postgresql postgresql-contrib libpq-dev postgresql-server-dev-all
+
+# install build requirements
+apt-get -y install make build-essential
+
+# install cracklib
+apt-get -y install libpam-cracklib libcrack2-dev
+```
+
+
+`RHEL`:
+
+```bash
+yum -y install openssl-devel
+
+# add postgres repo
+rpm -Uvh https://yum.postgresql.org/10/redhat/rhel-7-x86_64/pgdg-centos10-10-2.noarch.rpm
+
+# install postgres
+yum -y install postgresql10-server postgresql10-libs postgresql10-devel postgresql10-contrib
+
+# install cracklib
+yum -y install cracklib cracklib-devel cracklib-dicts words
+
+# create dictionary
+mkdict /usr/share/dict/* | packer /usr/lib/cracklib_dict
+
+# initialize databasse
+/usr/pgsql-10/bin/postgresql-10-setup initdb
+```
+
 To build it, just do this:
 
 ```bash
@@ -78,6 +120,18 @@ p_policy.min_uppercase_letter = 2
 
 # Set minimum number of lower casae letters:
 p_policy.min_lowercase_letter = 2
+```
+
+## Testing
+
+Using vagrant:
+
+```bash
+vagrant up
+vagrant provision --provision-with bootstrap
+vagrant provision --provision-with install
+vagrant provision --provision-with config
+vagrant provision --provision-with test
 ```
 
 ## More information
