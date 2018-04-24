@@ -1,3 +1,5 @@
 passwordpolicy.o
 passwordpolicy.so
 .vagrant
+*.log
+
