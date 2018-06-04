@@ -119,7 +119,6 @@ Using vagrant:
 
 ```bash
 vagrant up
-vagrant provision --provision-with bootstrap
 vagrant provision --provision-with install
 vagrant provision --provision-with config
 vagrant provision --provision-with test

@@ -46,7 +46,7 @@ Vagrant.configure("2") do |config|
       sed \"s|http://archive.ubuntu.com/ubuntu|http://mirror.amberit.com.bd/ubuntu-archive|g\" -i /etc/apt/sources.list
     SHELL
 
-    xenial.vm.provision "bootstrap", type: "shell", run: 'never', inline: <<-SHELL
+    xenial.vm.provision "bootstrap", type: "shell", inline: <<-SHELL
       add-apt-repository 'deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main'
       wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
       apt-get -y update
