@@ -29,11 +29,6 @@ Vagrant.configure("2") do |config|
       systemctl start postgresql-10.service
       systemctl enable postgresql-10.service
     SHELL
-
-    centos.vm.provision "config", type: "shell", run: 'never', inline: <<-SHELL
-      sudo cp /home/vagrant/passwordpolicy/test_configs/postgresql_centos.conf /var/lib/pgsql/10/data/postgresql.conf
-      systemctl restart postgresql-10.service
-    SHELL
   end
 
   config.vm.define 'xenial' do |xenial|
@@ -56,26 +51,13 @@ Vagrant.configure("2") do |config|
       systemctl start postgresql.service
       systemctl enable postgresql.service
     SHELL
-
-    xenial.vm.provision "config", type: "shell", run: 'never', inline: <<-SHELL
-      sudo cp /home/vagrant/passwordpolicy/test_configs/postgresql_ubuntu.conf /etc/postgresql/10/main/postgresql.conf
-      systemctl restart postgresql.service
-    SHELL
   end
 
   config.vm.provision "install", type: "shell", run: 'never', inline: <<-SHELL
     cd /home/vagrant/passwordpolicy
-    sudo PATH="/usr/pgsql-10/bin:$PATH" USE_PGXS=1 make
-    sudo PATH="/usr/pgsql-10/bin:$PATH" USE_PGXS=1 make install
+    sudo PATH="/usr/pgsql-10/bin:$PATH" make
+    sudo PATH="/usr/pgsql-10/bin:$PATH" make install
+    sudo PATH="/usr/pgsql-10/bin:$PATH" make installcheck
     rm passwordpolicy.o passwordpolicy.so
-  SHELL
-
-  config.vm.provision "test", type: "shell", run: 'never', inline: <<-SHELL
-    echo "test Password: 'aaaa'" && sudo -iu postgres psql -c "CREATE USER test_pass WITH PASSWORD 'aaaa';" | true
-    echo "test Password: 'aaaaaaaaaaaa'" && sudo -iu postgres psql -c "CREATE USER test_pass WITH PASSWORD 'aaaaaaaaaaaa';" | true
-    echo "test Password: 'aaaaaaaa1234'" && sudo -iu postgres psql -c "CREATE USER test_pass WITH PASSWORD 'aaaaaaaa1234';" | true
-    echo "test Password: 'aaaaaa#*#134'" && sudo -iu postgres psql -c "CREATE USER test_pass WITH PASSWORD 'aaaaaa#*#134';" | true
-    echo "test Password: 'ASWsdf#*#134'" && sudo -iu postgres psql -c "CREATE USER test_pass WITH PASSWORD 'ASWsdf#*#134';" | true
-    echo "drop user 'test_pass'" && sudo -iu postgres psql -c "DROP USER test_pass;" | true
   SHELL
 end

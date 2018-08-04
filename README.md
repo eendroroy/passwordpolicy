@@ -60,8 +60,8 @@ mkdict /usr/share/dict/* | packer /usr/lib/cracklib_dict
 To build it, just do this:
 
 ```bash
-USE_PGXS=1 make
-USE_PGXS=1 make install
+make
+make install
 ```
 
 If you encounter an error such as:
@@ -82,8 +82,8 @@ PG_CONFIG=/path/to/pg_config
 followed by the
 
 ```bash
-USE_PGXS=1 make
-USE_PGXS=1 make install
+make
+make install
 ```
 
 `pg_config` is usually under `/usr/pgsql-10/bin/pg_config` on 
@@ -92,8 +92,9 @@ RHEL/CentOS/Fedora. Replace 10 with your major PostgreSQL version.
 Alternatively the following will work too:
 
 ```bash
-PATH="/usr/pgsql-10/bin:$PATH" USE_PGXS=1 make
-sudo PATH="/usr/pgsql-10/bin:$PATH" USE_PGXS=1 make install
+PATH="/usr/pgsql-10/bin:$PATH" make
+sudo PATH="/usr/pgsql-10/bin:$PATH" make install
+PATH="/usr/pgsql-10/bin:$PATH" make installcheck
 ```
 
 ## Using the module
@@ -120,8 +121,6 @@ Using vagrant:
 ```bash
 vagrant up
 vagrant provision --provision-with install
-vagrant provision --provision-with config
-vagrant provision --provision-with test
 ```
 
 ## More information

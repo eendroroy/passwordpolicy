@@ -37,16 +37,16 @@ extern void _PG_init(void);
 int passMinLength = 8;
 
 // p_policy.min_special_chars
-int passMinSpcChar = 1;
+int passMinSpcChar = 2;
 
 // p_policy.min_numbers
-int passMinNumChar = 1;
+int passMinNumChar = 2;
 
 // p_policy.min_uppercase_letter
-int passMinUpperChar = 1;
+int passMinUpperChar = 2;
 
 // p_policy.min_lowercase_letter
-int passMinLowerChar = 1;
+int passMinLowerChar = 2;
 
 /*
  * check_password
@@ -245,22 +245,22 @@ static void define_variables() {
   /* Define p_policy.min_special_chars */
   DefineCustomIntVariable(
       "p_policy.min_special_chars", "Minimum number of special characters.",
-      NULL, &passMinSpcChar, 1, 1, INT_MAX, PGC_SIGHUP, 0, NULL, NULL, NULL);
+      NULL, &passMinSpcChar, 2, 1, INT_MAX, PGC_SIGHUP, 0, NULL, NULL, NULL);
 
   /* Define p_policy.min_numbers */
   DefineCustomIntVariable(
       "p_policy.min_numbers", "Minimum number of numeric characters.", NULL,
-      &passMinNumChar, 1, 1, INT_MAX, PGC_SIGHUP, 0, NULL, NULL, NULL);
+      &passMinNumChar, 2, 1, INT_MAX, PGC_SIGHUP, 0, NULL, NULL, NULL);
 
   /* Define p_policy.min_uppercase_letter */
   DefineCustomIntVariable(
       "p_policy.min_uppercase_letter", "Minimum number of upper case letters.",
-      NULL, &passMinUpperChar, 1, 1, INT_MAX, PGC_SIGHUP, 0, NULL, NULL, NULL);
+      NULL, &passMinUpperChar, 2, 1, INT_MAX, PGC_SIGHUP, 0, NULL, NULL, NULL);
 
   /* Define p_policy.min_lowercase_letter */
   DefineCustomIntVariable(
       "p_policy.min_lowercase_letter", "Minimum number of lower case letters.",
-      NULL, &passMinLowerChar, 1, 1, INT_MAX, PGC_SIGHUP, 0, NULL, NULL, NULL);
+      NULL, &passMinLowerChar, 2, 1, INT_MAX, PGC_SIGHUP, 0, NULL, NULL, NULL);
 
   if (passMinLength < (passMinSpcChar + passMinNumChar + passMinUpperChar + passMinLowerChar)) {
     ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
