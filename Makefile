@@ -3,7 +3,7 @@
 EXTENSION = passwordpolicy
 DATA = passwordpolicy--1.0.0.sql
 
-REGRESS_OPTS  = --inputdir=test --outputdir=test --load-extension=passwordpolicy
+REGRESS_OPTS  = --inputdir=test --outputdir=test --load-extension=passwordpolicy --user=postgres
 REGRESS = passwordpolicy_test
 
 MODULES = passwordpolicy          # our c module file to build
