@@ -1,14 +1,29 @@
 /*-------------------------------------------------------------------------
  *
- * passwordcheck.c
+ * passwordpolicy.c
+ *
+ * Copyright (c) 2018, indrajit
+ *
+ * Created from postgres passwordcheck.
  *
  *
- * Copyright (c) 2009-2017, PostgreSQL Global Development Group
+ * Original license:
  *
- * Author: Laurenz Albe <laurenz.albe@wien.gv.at>
  *
- * IDENTIFICATION
- *	  contrib/passwordcheck/passwordcheck.c
+ *  /*-------------------------------------------------------------------------
+ *  *
+ *  * passwordcheck.c
+ *  *
+ *  *
+ *  * Copyright (c) 2009-2017, PostgreSQL Global Development Group
+ *  *
+ *  * Author: Laurenz Albe <laurenz.albe@wien.gv.at>
+ *  *
+ *  * IDENTIFICATION
+ *  *	  contrib/passwordcheck/passwordcheck.c
+ *  *
+ *  *-------------------------------------------------------------------------
+ *  *\/
  *
  *-------------------------------------------------------------------------
  */
